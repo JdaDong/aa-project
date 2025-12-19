@@ -29,5 +29,6 @@ npx hardhat test
 使用命令
 
 ```bash
-npx hardhat test test/deployAndSendOp.ts --network localhost
+anvil  --fork-url https://eth-mainnet.g.alchemy.com/v2/${api_key} --fork-block-number 24030300 -vvv --steps-tracing  --hardfork prague
+npx hardhat test test/deployAndSendOp.ts --network anvil
 ```

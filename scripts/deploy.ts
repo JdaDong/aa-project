@@ -20,6 +20,11 @@ async function main() {
     console.log("simpleSmartAccount address: ", simpleSmartAccount.address);
     const sponsorPaymaster = await viem.deployContract("SponsorPaymaster", [minimalEntryPoint.address]);
     console.log("sponsorPaymaster address: ", sponsorPaymaster.address);
+    const sponsorPaymasterCode = await publicClient.getCode({
+  address: sponsorPaymaster.address,
+});
+
+    console.log("sponsorPaymaster code: ", sponsorPaymasterCode);
      // -----------------------------
     // 4. 给 Paymaster 存入押金 (很关键)
     // -----------------------------

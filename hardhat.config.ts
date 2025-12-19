@@ -28,9 +28,18 @@ export default defineConfig({
     },
   },
   networks: {
-    localhost: {
+    anvil: {
       url: "http://127.0.0.1:8545",
       type: "http",
-    }
-  }
+    },
+    hardhat: {
+      forking: {
+        url: "https://eth-mainnet.g.alchemy.com/v2/Qfdr68Zn1sVkbTNMukVf6BT7vPLuvLjq",
+        // 可选：指定区块高度，保证结果可复现
+        blockNumber: 24030300,
+        enabled: true,
+      },
+      type: "edr-simulated",
+    },
+  },
 });
