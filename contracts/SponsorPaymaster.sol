@@ -7,6 +7,7 @@ import "hardhat/console.sol";
 
 contract SponsorPaymaster is BasePaymaster {
     using UserOperationLib for PackedUserOperation;
+    event PostOpActualGasCost(uint256 actualGasCost, address indexed sender);
     mapping(address => bool) public whiteList;
     mapping(address => uint256) public sponsorGasUsed;
 
@@ -18,7 +19,6 @@ contract SponsorPaymaster is BasePaymaster {
         }
     }
 
-    // 接收 ETH 用于支付 gas
     receive() external payable {}
 
     function addToWhiteList(address _addr) external onlyOwner {
@@ -38,6 +38,9 @@ contract SponsorPaymaster is BasePaymaster {
         if (!whiteList[userOp.sender]) {
             revert("Not whiteList");
         }
+        if (userOp.paymasterAndData.length < PAYMASTER_DATA_OFFSET+12) {
+            revert("paymasterAndData length error");
+        }
 
         (uint48 validAfter, uint48 validUntil) = _parsePaymasterAndData(userOp.paymasterAndData);
         console.log("validUntil:", validUntil);
@@ -54,7 +57,8 @@ contract SponsorPaymaster is BasePaymaster {
     {
         address sender = abi.decode(context, (address));
         console.log("actualGasCost: ", actualGasCost);
-        if (mode != PostOpMode.opSucceeded) {
+        emit PostOpActualGasCost(actualGasCost, sender);
+        if (mode != PostOpMode.postOpReverted) {
             return;
         } 
         sponsorGasUsed[sender] += actualGasCost;
